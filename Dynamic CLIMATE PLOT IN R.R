@@ -35,6 +35,11 @@ animated_racing_plot <- ggplot(df_long, aes(x = Month, y = Temperature, fill = T
   shadow_mark() +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))  # Rotate x-axis text by 90 degrees
+# Set the filename for the animated GIF
+output_file <- "animated_racing_plot.gif"
+
+# Save the animated plot as a GIF
+anim_save(output_file, animate(animated_racing_plot, nframes = length(unique(df_long$Temperature_Type)), fps = 7, width = 1500, height = 500))
 
 # Display the animated plot
 animate(animated_racing_plot, nframes = length(unique(df_long$Temperature_Type)), fps = 7, width = 1500, height = 500)
