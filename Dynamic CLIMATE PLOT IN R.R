@@ -20,37 +20,21 @@ temperature_line_chart
 
 
 
+#to create the animated chart in R graphics 
+library(ggplot2)
+library(gganimate)
+# Create the animated racing plot
+animated_racing_plot <- ggplot(df_long, aes(x = Month, y = Temperature, fill = Temperature_Type)) +
+  geom_bar(stat = "identity", width = 0.3) +
+  labs(title = 'Animated Racing Bar Plot temperature datas',
+       x = 'Month',
+       y = 'Temperature') + 
+  transition_states(Temperature_Type, transition_length = 100, state_length = 60) +
+  enter_fade() +
+  exit_fade() +
+  shadow_mark() +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))  # Rotate x-axis text by 90 degrees
 
-#for creating the animations need improvemnt
-
-library(tidyverse)
-library(plotly)
-df<-read.csv("E:/Fertility problems in Mung bean/Climate Tylor/3CDD.csv", header = TRUE)
-
-# Convert 'Month' column to numeric data
-df$Month <- as.numeric(gsub("-", "", df$Month))
-
-# Convert data to long format
-df_long <- df %>%
-  pivot_longer(cols = -Month, names_to = "Temperature_Type", values_to = "Temperature")
-
-# Create animated temperature line chart
-temperature_animation_chart <- plot_ly(df_long, x = ~Month, y = ~Temperature, color = ~Temperature_Type,
-                                       type = 'scatter', mode = 'lines+markers') %>%
-  add_trace(data = filter(df_long, Temperature_Type == "2020max_Tem"),
-            frame = "2020max_Tem") %>%
-  add_trace(data = filter(df_long, Temperature_Type == "2021max_Tem"),
-            frame = "2021max_Tem") %>%
-  add_trace(data = filter(df_long, Temperature_Type == "2022max_Tem"),
-            frame = "2022max_Tem") %>%
-  add_trace(data = filter(df_long, Temperature_Type == "2023max_Tem"),
-            frame = "2023max_Tem") %>%
-  layout(title = 'Animated Temperature Line Chart',
-         xaxis = list(title = 'Month'),
-         yaxis = list(title = 'Temperature'),
-         updatemenus = list(list(type = "buttons", showactive = FALSE, buttons = list(list(label = "Play",
-                                                                                           method = "animate", args = list(list(frame = list(duration = 500, redraw = TRUE), fromcurrent = TRUE))),
-                                                                                      list(label = "Pause", method = "animate", args = list(list(frame = list(duration = 0, redraw = TRUE), mode = "immediate"), NULL)))))
-  )
-
-temperature_animation_chart
+# Display the animated plot
+animate(animated_racing_plot, nframes = length(unique(df_long$Temperature_Type)), fps = 7, width = 1500, height = 500)
